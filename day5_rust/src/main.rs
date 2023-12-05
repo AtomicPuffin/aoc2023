@@ -1,9 +1,5 @@
-#![allow(dead_code, unreachable_code, unused_imports, unused_variables)]
-use itertools::{Itertools, MapResults};
-use std::collections::HashSet;
-use std::iter::FromIterator;
-use std::path::MAIN_SEPARATOR_STR;
-use std::{fs, i32};
+use itertools::Itertools;
+use std::fs;
 
 fn main() {
     println!(
@@ -97,25 +93,21 @@ mod tests {
     use super::*;
     use pretty_assertions::assert_eq;
 
-    #[ignore]
     #[test]
     fn test_p1_ex() {
         assert_eq!(part_1(&read_file("example.txt")), 35);
     }
 
-    #[ignore]
     #[test]
     fn test_p1() {
         assert_eq!(part_1(&read_file("input.txt")), 462648396);
     }
 
-    #[ignore]
     #[test]
     fn test_p2_ex() {
         assert_eq!(part_2(&read_file("example.txt")), 46);
     }
 
-    #[ignore]
     #[test]
     fn test_p2() {
         assert_eq!(part_2(&read_file("input.txt")), 2520479);

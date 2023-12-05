@@ -26,7 +26,11 @@ fn part_2(input: &str) -> i32 {
 }
 
 fn do_the_line(input: &str) -> (Vec<(i32, (i32, i32, i32))>, Vec<(char, (i32, i32))>) {
-    tod!()
+    todo!()
+}
+
+fn read_file(file: &str) -> String {
+    fs::read_to_string(file).unwrap().trim().to_string()
 }
 
 #[cfg(test)]
@@ -34,7 +38,6 @@ mod tests {
     use super::*;
     use pretty_assertions::assert_eq;
 
-    #[ignore]
     #[test]
     fn test_p1_ex() {
         assert_eq!(part_1(&read_file("example.txt")), todo!());

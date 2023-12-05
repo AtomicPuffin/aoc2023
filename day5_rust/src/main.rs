@@ -31,7 +31,6 @@ fn part_1(input: &str) -> i64 {
             lowest = seed;
         }
     }
-
     lowest
 }
 
@@ -152,8 +151,6 @@ fn do_the_line(input: &str) -> (Vec<i64>, Vec<Vec<Vec<i64>>>) {
         //println!("seed: {}", s);
         seeds.push(s.parse::<i64>().unwrap());
     }
-    seeds.push(82);
-    seeds.push(1);
     for sec in _sections[1..].iter() {
         let mut section = Vec::new();
         for line in sec.lines().skip(1) {
@@ -190,11 +187,11 @@ mod tests {
 
     #[test]
     fn test_p2_ex() {
-        assert_eq!(part_2(&read_file("example.txt")), 46);
+        assert_eq!(part_2_opt(&read_file("example.txt")), 46);
     }
 
     #[test]
     fn test_p2() {
-        assert_eq!(part_2(&read_file("input.txt")), 2520479);
+        assert_eq!(part_2_opt(&read_file("input.txt")), 2520479);
     }
 }

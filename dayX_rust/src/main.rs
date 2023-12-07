@@ -25,8 +25,15 @@ fn part_2(input: &str) -> i32 {
     todo!()
 }
 
-fn do_the_line(input: &str) -> (Vec<(i32, (i32, i32, i32))>, Vec<(char, (i32, i32))>) {
-    todo!()
+fn do_the_line(input: &str) -> Vec<i32> {
+    let re = regex::Regex::new(r" +").unwrap();
+    let trim_line = re.replace_all(input, " ");
+    let lines = trim_line.split(' ').collect_vec()[1..]
+        .iter()
+        .map(|x| x.parse::<i32>().unwrap())
+        .collect_vec();
+
+    lines
 }
 
 fn read_file(file: &str) -> String {

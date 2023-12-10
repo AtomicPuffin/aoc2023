@@ -17,20 +17,20 @@ fn main() {
     println!("Answer to Part 2: {}", part_2(&read_file("input.txt")));
 }
 
-fn part_1(input: &str) -> i32 {
+fn part_1(input: &str) -> i64 {
     todo!()
 }
 
-fn part_2(input: &str) -> i32 {
+fn part_2(input: &str) -> i64 {
     todo!()
 }
 
-fn do_the_line(input: &str) -> Vec<i32> {
+fn do_the_line(input: &str) -> Vec<i64> {
     let re = regex::Regex::new(r" +").unwrap();
     let trim_line = re.replace_all(input, " ");
     let lines = trim_line.split(' ').collect_vec()[1..]
         .iter()
-        .map(|x| x.parse::<i32>().unwrap())
+        .map(|x| x.parse::<i64>().unwrap())
         .collect_vec();
 
     lines

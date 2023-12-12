@@ -25,8 +25,7 @@ fn part_1(input: &str) -> i64 {
         grp.reverse();
         let g = grp.pop().unwrap();
         let mut cache: HashMap<(String, Vec<i64>, i64, i64), i64> = HashMap::new();
-        let temp = recurse(pos, grp, g, 0, &mut cache);
-        sum += temp;
+        sum += recurse(pos, grp, g, 0, &mut cache);
     }
     sum
 }
@@ -89,10 +88,10 @@ fn recurse(
             // #, can never trigger a new group
             let (ok, _) = is_ok(count, group, groups_left as i64, last, '#');
             if ok {
-                let springs: String = springs.clone().collect();
-                let temp = recurse(springs.clone(), groups.clone(), group, count + 1, cache);
+                let new_springs: String = springs.clone().collect();
+                let temp = recurse(new_springs.clone(), groups.clone(), group, count + 1, cache);
                 sum += temp;
-                cache.insert((springs.clone(), groups.clone(), group, count + 1), temp);
+                cache.insert((new_springs, groups.clone(), group, count + 1), temp);
             }
 
             // .
@@ -107,10 +106,10 @@ fn recurse(
                     }
                     count = 0;
                 }
-                let springs: String = springs.clone().collect();
-                let temp = recurse(springs.clone(), groups.clone(), group, count, cache);
+                let new_springs: String = springs.clone().collect();
+                let temp = recurse(new_springs.clone(), groups.clone(), group, count, cache);
                 sum += temp;
-                cache.insert((springs.clone(), groups.clone(), group, count), temp);
+                cache.insert((new_springs.clone(), groups.clone(), group, count), temp);
             }
             return sum;
         } else {
@@ -133,31 +132,39 @@ fn recurse(
             }
         }
     }
+    // end of springs without fail
     return 1;
 }
 
 fn is_ok(mut count: i64, group: i64, groups_left: i64, last: bool, s: char) -> (bool, bool) {
-    //let mut is_ok = false;
+    // returns (is this valid, should we grab the next group)
     if last && groups_left > 0 {
         return (false, false);
     }
     if s == '#' {
         count += 1;
         if group == count {
+            //ok, lets see where this goes
             return (true, false);
         } else if group > count && !last {
+            //ok, lets see where this goes
             return (true, false);
         } else {
+            // group < count or last and group not complete, fail
             return (false, false);
         }
     } else if s == '.' {
         if group == count {
+            //group ended on mark, get next
             return (true, true);
         } else if last && group > 0 {
+            //group did not complete, fail
             return (false, false);
         } else if count == 0 {
+            //unlikely now that duplicate . is removed, otherwise this catches it and it's fine
             return (true, false);
         } else {
+            //we ended a group early, fail
             return (false, false);
         }
     } else {

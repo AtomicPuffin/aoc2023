@@ -24,8 +24,8 @@ fn part_1(input: &str) -> i64 {
         let mut grp = row.1;
         grp.reverse();
         let g = grp.pop().unwrap();
-        let mut cashe: HashMap<(String, Vec<i64>, i64, i64), i64> = HashMap::new();
-        let temp = recurse(pos, grp, g, 0, &mut cashe);
+        let mut cache: HashMap<(String, Vec<i64>, i64, i64), i64> = HashMap::new();
+        let temp = recurse(pos, grp, g, 0, &mut cache);
         sum += temp;
     }
     sum
@@ -38,8 +38,8 @@ fn part_2(input: &str) -> i64 {
         let (spr, mut grp) = unfold(row.0, row.1.clone());
         grp.reverse();
         let g = grp.pop().unwrap();
-        let mut cashe: HashMap<(String, Vec<i64>, i64, i64), i64> = HashMap::new();
-        sum += recurse(spr, grp, g, 0, &mut cashe);
+        let mut cache: HashMap<(String, Vec<i64>, i64, i64), i64> = HashMap::new();
+        sum += recurse(spr, grp, g, 0, &mut cache);
     }
     sum
 }
@@ -75,10 +75,10 @@ fn recurse(
     mut groups: Vec<i64>,
     mut group: i64,
     mut count: i64,
-    cashe: &mut HashMap<(String, Vec<i64>, i64, i64), i64>,
+    cache: &mut HashMap<(String, Vec<i64>, i64, i64), i64>,
 ) -> i64 {
-    if cashe.contains_key(&(spr.clone(), groups.clone(), group, count)) {
-        return cashe[&(spr.clone(), groups.clone(), group, count)];
+    if cache.contains_key(&(spr.clone(), groups.clone(), group, count)) {
+        return cache[&(spr.clone(), groups.clone(), group, count)];
     }
     let mut springs = spr.chars().peekable();
     while let Some(s) = springs.next() {
@@ -90,9 +90,9 @@ fn recurse(
             let (ok, _) = is_ok(count, group, groups_left as i64, last, '#');
             if ok {
                 let springs: String = springs.clone().collect();
-                let temp = recurse(springs.clone(), groups.clone(), group, count + 1, cashe);
+                let temp = recurse(springs.clone(), groups.clone(), group, count + 1, cache);
                 sum += temp;
-                cashe.insert((springs.clone(), groups.clone(), group, count + 1), temp);
+                cache.insert((springs.clone(), groups.clone(), group, count + 1), temp);
             }
 
             // .
@@ -108,9 +108,9 @@ fn recurse(
                     count = 0;
                 }
                 let springs: String = springs.clone().collect();
-                let temp = recurse(springs.clone(), groups.clone(), group, count, cashe);
+                let temp = recurse(springs.clone(), groups.clone(), group, count, cache);
                 sum += temp;
-                cashe.insert((springs.clone(), groups.clone(), group, count), temp);
+                cache.insert((springs.clone(), groups.clone(), group, count), temp);
             }
             return sum;
         } else {
@@ -170,7 +170,6 @@ fn is_ok(mut count: i64, group: i64, groups_left: i64, last: bool, s: char) -> (
 /*fn count_correct(brutes: Vec<Vec<char>>, groups: Vec<i64>) -> i64 {
     let mut sum = 0;
     for brute in brutes {
-        //println!("Brute: {}", brute.iter().collect::<String>());
         let mut brt = brute.iter().peekable();
         let mut counts = Vec::new();
         let mut counter = 0;
@@ -194,15 +193,13 @@ fn is_ok(mut count: i64, group: i64, groups_left: i64, last: bool, s: char) -> (
             sum += 1;
         }
     }
-    //println!("sum: {}", sum);
     sum / 2
 }*/
 
 /*fn brute_the_force(spr: String) -> Vec<Vec<char>> {
     let mut new_s1 = Vec::new();
     let mut new_s2 = Vec::new();
-    //let mut springs = springs.chars().collect_vec();
-    //println!("springs: {}", spr);
+
     let mut result = Vec::new();
     let mut springs = spr.chars();
     let mut split = false;

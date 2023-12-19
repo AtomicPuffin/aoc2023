@@ -58,11 +58,10 @@ fn part_1(input: &str) -> i64 {
         for x in min.0..max.1 + 1 {
             if !trench.contains(&(y, x)) && !filled.contains_key(&(y, x)) {
                 queue.push((y, x));
-                //println!("start {} {}", y, x);
+
                 let mut inside = true;
                 let mut surface = HashSet::new();
                 while let Some((y, x)) = queue.pop() {
-                    //println!(" {} {}", y, x);
                     if trench.contains(&(y, x)) {
                         continue;
                     }

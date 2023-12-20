@@ -155,6 +155,7 @@ fn do_the_line(
                 let val = v.parse::<i64>().unwrap();
                 rules.push((cat, op, val, targ.to_string()));
             } else {
+                // use 4 to identify rule-less forward
                 rules.push((4, "".to_string(), 0, rule.to_string()));
             }
         }

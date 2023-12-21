@@ -36,7 +36,7 @@ fn part_2(input: &str, steps: i64) -> i64 {
     // calculate saturated states (they will alternate between two states mirroring eachother where every other box has the other state)
     // calculate numbers from each corner or central line until saturated once
     // calculate number of saturated cubes, and find all edge cubes and sum their remaining steps
-    // due to lazy only works on odd numbers of steps, for even all .0 and .1 should be swapped
+    // due to lazy and lack of examples possibly only works on odd numbers of steps, for even all .0 and .1 can be swapped
 
     // example works differently due to assymetric shape resulting in variations in channels and is ignored
     let (garden, start, max) = do_the_line(input);
@@ -58,95 +58,85 @@ fn part_2(input: &str, steps: i64) -> i64 {
     let mut sum = 0;
     let diag = steps - 132;
     let straight = steps - 66;
+    let odd_switch = steps % 2;
+    let odd = first.get(&262).unwrap().0;
+    let even = first.get(&262).unwrap().1;
     // we will skip origo
     sum += first.get(&262).unwrap().0;
-    for x in 0..(straight / (131) + 1) {
-        //do central line E W
-        if x * 131 < straight - 262 {
-            if x % 2 == 0 {
-                sum += 7421 * 4;
+
+    //do central line E W
+    if ((straight) / 131 - 2) % 2 == odd_switch {
+        sum += (odd + even) * ((straight / 131 - 2) / 2) * 4;
+        sum += odd * 4;
+    } else {
+        sum += (odd + even) * (straight / 131 - 2) / 2 * 4;
+    }
+    for x in (straight / 131 - 2)..(straight / 131 + 1) {
+        if (straight - x * 131) > 262 {
+            if x % 2 == odd_switch {
+                sum += even * 4;
             } else {
-                sum += 7450 * 4;
+                sum += odd * 4;
             }
         } else {
-            let temp1 = directions
-                .get(&"N")
-                .unwrap()
-                .get(&(straight - x * 131))
-                .unwrap();
-            let temp2 = directions
-                .get(&"S")
-                .unwrap()
-                .get(&(straight - x * 131))
-                .unwrap();
-            let temp3 = directions
-                .get(&"E")
-                .unwrap()
-                .get(&(straight - x * 131))
-                .unwrap();
-            let temp4 = directions
-                .get(&"W")
-                .unwrap()
-                .get(&(straight - x * 131))
-                .unwrap();
-            if x % 2 == 0 {
-                sum += temp1.0;
-                sum += temp2.0;
-                sum += temp3.0;
-                sum += temp4.0;
-            } else {
+            let range = straight - x * 131;
+            let temp1 = directions.get(&"N").unwrap().get(&range).unwrap();
+            let temp2 = directions.get(&"S").unwrap().get(&range).unwrap();
+            let temp3 = directions.get(&"E").unwrap().get(&range).unwrap();
+            let temp4 = directions.get(&"W").unwrap().get(&range).unwrap();
+            if x % 2 == odd_switch {
                 sum += temp1.1;
                 sum += temp2.1;
                 sum += temp3.1;
                 sum += temp4.1;
+            } else {
+                sum += temp1.0;
+                sum += temp2.0;
+                sum += temp3.0;
+                sum += temp4.0;
             }
         }
     }
-    for y in 0..(diag / (131) + 1) {
-        for x in 0..(diag / (131) + 1) {
-            // all corners are the same except on edges
-            // where propagation is different within a box depending on direction
-            // so we do one quadrant only
-            if x * 131 + y * 131 > diag {
-                continue;
-            } else if y * 131 + x * 131 < diag - 262 {
-                if (y + x) % 2 == 0 {
-                    sum += 7421 * 4;
-                } else {
-                    sum += 7450 * 4;
-                }
+
+    // all corners are the same except on edges
+    // where propagation is different within a box depending on direction
+    // so we do one quadrant only
+    // outmost edge will occur diag / (131) + 1 times, inside that diag / (131) -1 times, and inside that diag / (131) - 3 times
+    //full boxes
+
+    for x in 1..(diag / 131) {
+        //off by one due to *x
+        if x % 2 == 0 {
+            sum += even * x * 4;
+        } else {
+            sum += odd * x * 4;
+        }
+    }
+
+    for x in (diag / 131 - 1)..(diag / 131 + 1) {
+        if (diag - x * 131) > 262 {
+            if x % 2 == 1 {
+                sum += odd * x * 4;
             } else {
-                let temp1 = directions
-                    .get(&"NE")
-                    .unwrap()
-                    .get(&(diag - (y + x) * 131))
-                    .unwrap();
-                let temp2 = directions
-                    .get(&"NW")
-                    .unwrap()
-                    .get(&(diag - (y + x) * 131))
-                    .unwrap();
-                let temp3 = directions
-                    .get(&"SE")
-                    .unwrap()
-                    .get(&(diag - (y + x) * 131))
-                    .unwrap();
-                let temp4 = directions
-                    .get(&"SW")
-                    .unwrap()
-                    .get(&(diag - (y + x) * 131))
-                    .unwrap();
-                if (x + y) % 2 == 0 {
-                    sum += temp1.0;
-                    sum += temp2.0;
-                    sum += temp3.0;
-                    sum += temp4.0;
-                } else {
-                    sum += temp1.1;
-                    sum += temp2.1;
-                    sum += temp3.1;
-                    sum += temp4.1;
-                }
+                sum += even * x * 4;
+            }
+        } else {
+            let range = diag - x * 131;
+            let temp1 = directions.get(&"NE").unwrap().get(&range).unwrap();
+            let temp2 = directions.get(&"NW").unwrap().get(&range).unwrap();
+            let temp3 = directions.get(&"SE").unwrap().get(&range).unwrap();
+            let temp4 = directions.get(&"SW").unwrap().get(&range).unwrap();
+            let tx = x + 1;
+            if x % 2 == 0 {
+                sum += temp1.0 * tx;
+                sum += temp2.0 * tx;
+                sum += temp3.0 * tx;
+                sum += temp4.0 * tx;
+            } else {
+                sum += temp1.1 * tx;
+                sum += temp2.1 * tx;
+                sum += temp3.1 * tx;
+                sum += temp4.1 * tx;
             }
         }
     }
@@ -206,6 +196,7 @@ fn calc_odd_even(
         queue = new_positions;
         if queue.len() == 0 {
             while counter < 263 {
+                counter += 1;
                 counters.insert(counter, (odd_counter, even_counter));
                 counter += 1;
             }

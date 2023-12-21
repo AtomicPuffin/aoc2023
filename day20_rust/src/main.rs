@@ -112,6 +112,8 @@ fn part_2(input: &str) -> i64 {
     }
     loop {
         if counter == 10000 {
+            // this is a wee bit lazy, I made the function to print whenever the registers send a 0, thinking there would be a repeating series
+            // and then just looked at the output and noticed it was simply a repeating interval, and well below 10000.
             break;
         }
         let mut queue = VecDeque::new();
